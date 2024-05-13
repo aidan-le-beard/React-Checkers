@@ -8,7 +8,7 @@ function Square({value, onSquareClick}) {
   return <button className="square" onClick={onSquareClick}>{value}</button>
 }
 
-function Board({xIsNext, squares, onPlay, currentMove}) {
+function Board({xIsNext, squares, onPlay}) {
 
   function handleClick(i) {
 
@@ -30,8 +30,9 @@ function Board({xIsNext, squares, onPlay, currentMove}) {
   let status;
   if (winner) {
     status = "Winner: " + winner;
+
   // Implement draw condition
-  } else if (currentMove === 9) {
+  } else if (!squares.includes(null)) {
     status = "The game is a draw.";
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
@@ -87,17 +88,28 @@ export default function Game() {
     } else {
       description = 'Go to game start';
     }
-    return (
-      <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
-      </li>
-    );
+
+    // check if not the current move, and return a button to jump to that move, if not
+    if (move != currentMove) {
+      return (
+        <li key={move}>
+          <button onClick={() => jumpTo(move)}>{description}</button>
+        </li>
+      );
+    
+    // else, if it is the current move, show text that we are at the current move (or game start)
+    } else {
+      return (
+        // put inline CSS styling to remove number from current position, and special condition for game start (move 0).
+        <li key={move} style={{listStyleType: "none"}}>You are at {currentMove == 0 ? "game start." : "move #" + move}</li>
+      );
+    }    
   });
 
   return (
     <div className="game">
       <div className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} currentMove={currentMove} />
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
       <div className="game-info">
         <ol>{moves}</ol>
