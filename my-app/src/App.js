@@ -77,6 +77,7 @@ export default function Game() {
   const [currentMove, setCurrentMove] = useState(0);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
+  const [descMovesList, setDescMovesList] = useState(0);
 
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
@@ -84,8 +85,14 @@ export default function Game() {
     setCurrentMove(nextHistory.length - 1);
   }
 
+  // button function. Changes current move.
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
+  }
+
+  // button function. Reverses the order of moves.
+  function toggleSort() {
+    setDescMovesList(!descMovesList)
   }
 
   const moves = history.map((squares, move) => {
@@ -113,13 +120,19 @@ export default function Game() {
     }
   });
 
+  if (descMovesList) {
+    moves.reverse();
+  }
+
   return (
     <div className="game">
       <div className="game-board">
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
       <div className="game-info">
-        <ol>{moves}</ol>
+        {/* Reverse the order of the list if descending order, as well. */}
+        <ol reversed={descMovesList}> {moves} </ol>
+        <ul> <li style={{ listStyleType: "none" }} onClick={() => toggleSort()}><button>Toggle list to {descMovesList ? "ascending" : "descending"} order.</button> </li> </ul>
       </div>
     </div>
   );
