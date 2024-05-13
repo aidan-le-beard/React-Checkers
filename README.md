@@ -1,4 +1,4 @@
-# React-Checkers
+# React-Tic-Tac-Toe
 
 ### To execute on Windows:
 
