@@ -1,14 +1,17 @@
+/// Ideas
+/// 1) adjust board size (3x3, 4x4, 8x8...)
+
 // to use state
 import { useState } from 'react';
 
 // takes "props" value and onSquareClick
-function Square({value, onSquareClick}) {
+function Square({ value, onSquareClick }) {
 
   // curly braces let us use javascript, inside the JSX
   return <button className="square" onClick={onSquareClick}>{value}</button>
 }
 
-function Board({xIsNext, squares, onPlay}) {
+function Board({ xIsNext, squares, onPlay }) {
 
   function handleClick(i) {
 
@@ -31,36 +34,40 @@ function Board({xIsNext, squares, onPlay}) {
   if (winner) {
     status = "Winner: " + winner;
 
-  // Implement draw condition
+    // Implement draw condition
   } else if (!squares.includes(null)) {
     status = "The game is a draw.";
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
 
-  
+  // vars for storing row/column length, div rows, and Square elements
+  let rowColLength = 3;
+  let rowList = [];
+  let squareList = [];
 
+  // loop creates div rows and Square children by pushing to array vars, based on row/column size
+  for (let i = 0; i < rowColLength ** 2; i++) {
+
+    // push Square element to array of squares
+    squareList.push(<Square key={i} value={squares[i]} onSquareClick={() => handleClick(i)} />);
+
+    if ((i + 1) % rowColLength === 0 && i > 0) {
+      // when a full row is complete, push the squares as children to the div
+      rowList.push(<div key={(i + 1) / rowColLength} className="board-row">{squareList}</div>);
+
+      // clear the array of squares for the next div/row
+      squareList = [];
+    }
+  }
+
+  // return our created row/board
   return (
     <>
       <div className="status">{status}</div>
-
-       {/* can we do this iteratively, instead? */}
-      <div className="board-row">
-        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
-        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
-        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
-        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
-        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
-        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
-      </div>
+      {rowList}
     </>
+
   );
 }
 
@@ -96,14 +103,14 @@ export default function Game() {
           <button onClick={() => jumpTo(move)}>{description}</button>
         </li>
       );
-    
-    // else, if it is the current move, show text that we are at the current move (or game start)
+
+      // else, if it is the current move, show text that we are at the current move (or game start)
     } else {
       return (
         // put inline CSS styling to remove number from current position, and special condition for game start (move 0).
-        <li key={move} style={{listStyleType: "none"}}>You are at {currentMove == 0 ? "game start." : "move #" + move}</li>
+        <li key={move} style={{ listStyleType: "none" }}>You are at {currentMove == 0 ? "game start." : "move #" + move}</li>
       );
-    }    
+    }
   });
 
   return (
