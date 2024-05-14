@@ -1,8 +1,10 @@
 /// Ideas
 /// 1) DONE make winning calculation not hardcoded to adjust board size (3x3, 4x4, 8x8...)
-/// 2) DONE and adjust how many in a row to win (3, 4, 5)
+/// 2) DONE and adjust how many in a row to win (3, 4, 5) to not be hardcoded
 /// 3) add toggles (drop down list?) to adjust board size / how many in a row to win
 /// 4) add co caro blocked rule?
+/// 5) Display the location for each move in the format (row, col) in the move history list.
+/// 6) When someone wins, highlight the X squares that caused the win
 
 // to use state
 import { useState } from 'react';
@@ -101,8 +103,21 @@ export default function Game() {
 
   const moves = history.map((squares, move) => {
     let description;
+    let rowColPos = []; // holds the calculated [row, col] position of the move
+
     if (move > 0) {
-      description = 'Go to move #' + move;
+
+      // loop finds out what position the move was made at by checking where the difference in the prior history array position is
+      for (let i = 0; i < history[move].length; i++) {
+        if (history[move][i] != history[move - 1][i]) {
+          // now that the position is found, calculate the row and column position
+          rowColPos.push(Math.ceil((i + 1) / rowColLength));
+          rowColPos.push((i % rowColLength) + 1);
+          break;
+        }
+      }
+
+      description = 'Go to move #' + move + " (" + rowColPos[0] + ", " + rowColPos[1] + ")";
     } else {
       description = 'Go to game start';
     }
@@ -119,7 +134,7 @@ export default function Game() {
     } else {
       return (
         // put inline CSS styling to remove number from current position, and special condition for game start (move 0).
-        <li key={move} style={{ listStyleType: "none" }}>You are at {currentMove == 0 ? "game start." : "move #" + move}</li>
+        <li key={move} style={{ listStyleType: "none" }}>You are at {currentMove == 0 ? "game start." : "move #" + move + " (" + rowColPos[0] + ", " + rowColPos[1] + ")"}</li>
       );
     }
   });
@@ -201,7 +216,7 @@ function calculateWinner(squares, rowColLength) {
 
     // if the next potential diagonal spot is actually 2 rows down (not in the diagonal) then give up on this diagonal
     if (((Math.ceil((i + rowColLength + 2) / rowColLength) - Math.ceil((i + 1) / rowColLength)) > 1) && winningLine.length > 0) {
-      i = winningLine[0] + 1 - rowColLength + 1;
+      i = winningLine[0] + 1 - (rowColLength + 1);
       winningLine = [];
       continue;
     }
