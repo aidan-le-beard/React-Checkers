@@ -3,7 +3,7 @@
 /// 2) DONE and adjust how many in a row to win (3, 4, 5) to not be hardcoded
 /// 3) add toggles (drop down list?) to adjust board size / how many in a row to win
 /// 4) add co caro blocked rule?
-/// 5) Display the location for each move in the format (row, col) in the move history list.
+/// 5) DONE Display the location for each move in the format (row, col) in the move history list.
 /// 6) When someone wins, highlight the X squares that caused the win
 
 // to use state
