@@ -4,16 +4,16 @@
 /// 3) add toggles (drop down list?) to adjust board size / how many in a row to win
 /// 4) add co caro blocked rule?
 /// 5) DONE Display the location for each move in the format (row, col) in the move history list.
-/// 6) When someone wins, highlight the X squares that caused the win
+/// 6) DONE When someone wins, highlight the X squares that caused the win
 
 // to use state
 import { useState } from 'react';
 
 // takes "props" value and onSquareClick
-function Square({ value, onSquareClick }) {
+function Square({ value, onSquareClick, winningColor }) {
 
   // curly braces let us use javascript, inside the JSX
-  return <button className="square" onClick={onSquareClick}>{value}</button>
+  return <button className="square" style={{ backgroundColor: winningColor }} onClick={onSquareClick}>{value}</button>
 }
 
 function Board({ xIsNext, squares, onPlay, rowColLength }) {
@@ -37,13 +37,21 @@ function Board({ xIsNext, squares, onPlay, rowColLength }) {
   const winner = calculateWinner(squares, rowColLength);
   let status;
   if (winner) {
-    status = "Winner: " + winner;
+    status = "Winner: " + squares[winner[0]];
 
-    // Implement draw condition
+  // Implement draw condition
   } else if (!squares.includes(null)) {
     status = "The game is a draw.";
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
+  }
+
+  // if there's a winner, matches the winning indices returned to the index sent on Square creation, and returns blue on match
+  function returnColor(i) {
+    if (winner && winner.includes(i)) {
+      return 'lightskyblue';
+    }
+    return;
   }
 
   // vars for storing div rows, and Square elements
@@ -54,7 +62,7 @@ function Board({ xIsNext, squares, onPlay, rowColLength }) {
   for (let i = 0; i < rowColLength ** 2; i++) {
 
     // push Square element to array of squares
-    squareList.push(<Square key={i} value={squares[i]} onSquareClick={() => handleClick(i)} />);
+    squareList.push(<Square key={i} value={squares[i]} winningColor={returnColor(i)} onSquareClick={() => handleClick(i)} />);
 
     if ((i + 1) % rowColLength === 0 && i > 0) {
       // when a full row is complete, push the squares as children to the div
@@ -259,12 +267,13 @@ function calculateWinner(squares, rowColLength) {
   for (let i = 0; i < lines.length; i++) {
     for (let j = 0; j < lines[i].length; j++) {
       if (squares[lines[i][j]]) {
-        checkWinner.push(squares[lines[i][j]]); 
+        console.log(lines[i]);
+        checkWinner.push(squares[lines[i][j]]);
       }
     }
     // count times X or O appears, and if 1 or the other is the required number to win, return which one wins
     if (checkWinner.filter(x => x === "X").length === requiredToWin || checkWinner.filter(x => x === "O").length === requiredToWin) {
-      return squares[lines[i][0]];
+      return lines[i];
     }
     // reset checkWinner for the next line to check
     checkWinner = [];
