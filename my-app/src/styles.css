@@ -80,11 +80,19 @@ body {
 .status {
   margin-bottom: 10px;
 }
+
 .game {
   display: flex;
   flex-direction: row;
+  gap: 7px;
 }
 
 .game-info {
   margin-left: 20px;
+}
+
+.dropDown {
+  width:125px;
+  display:block;
+  font-size:12px;
 }

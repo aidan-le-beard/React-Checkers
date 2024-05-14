@@ -1,7 +1,7 @@
 /// Ideas
 /// 1) DONE make winning calculation not hardcoded to adjust board size (3x3, 4x4, 8x8...)
 /// 2) DONE and adjust how many in a row to win (3, 4, 5) to not be hardcoded
-/// 3) add toggles (drop down list?) to adjust board size / how many in a row to win
+/// 3) DONE add toggles (drop down list?) to adjust board size / how many in a row to win
 /// 4) add co caro blocked rule?
 /// 5) DONE Display the location for each move in the format (row, col) in the move history list.
 /// 6) DONE When someone wins, highlight the X squares that caused the win
@@ -16,11 +16,11 @@ function Square({ value, onSquareClick, winningColor }) {
   return <button className="square" style={{ backgroundColor: winningColor }} onClick={onSquareClick}>{value}</button>
 }
 
-function Board({ xIsNext, squares, onPlay, rowColLength }) {
+function Board({ xIsNext, squares, onPlay, rowColLength, requiredToWin }) {
 
   function handleClick(i) {
 
-    if (squares[i] || calculateWinner(squares, rowColLength)) {
+    if (squares[i] || calculateWinner(squares, rowColLength, requiredToWin)) {
       return;
     }
 
@@ -34,13 +34,13 @@ function Board({ xIsNext, squares, onPlay, rowColLength }) {
     onPlay(nextSquares);
   }
 
-  const winner = calculateWinner(squares, rowColLength);
+  const winner = calculateWinner(squares, rowColLength, requiredToWin);
   let status;
   if (winner) {
     status = "Winner: " + squares[winner[0]];
 
-  // Implement draw condition
-  } else if (!squares.includes(null)) {
+    // Implement draw condition
+  } else if (!squares.includes(null) && rowColLength ** 2 == squares.length) {
     status = "The game is a draw.";
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
@@ -86,11 +86,14 @@ function Board({ xIsNext, squares, onPlay, rowColLength }) {
 export default function Game() {
 
   // var for storing row/col length
-  let rowColLength = 8;
+  const [rowColLength, setRowColLength] = useState(3);
+  // var for storing how many Xs/Os in a row required to win
+  const [requiredToWin, setRequiredToWin] = useState(3);
   const [history, setHistory] = useState([Array(rowColLength ** 2).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
+  // var for changing order of moves to be ascending/descending
   const [descMovesList, setDescMovesList] = useState(0);
 
   function handlePlay(nextSquares) {
@@ -107,6 +110,16 @@ export default function Game() {
   // button function. Reverses the order of moves.
   function toggleSort() {
     setDescMovesList(!descMovesList)
+  }
+
+  // changes the board size
+  function changeBoardSize(value) {
+    setRowColLength(value);
+  }
+
+  // changes how many in a row to win
+  function changeReqToWin(value) {
+    setRequiredToWin(value);
   }
 
   const moves = history.map((squares, move) => {
@@ -152,22 +165,65 @@ export default function Game() {
   }
 
   return (
-    <div className="game">
-      <div className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} rowColLength={rowColLength} />
+    <>
+      <div className="game">
+        <div className="game-board">
+          <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} rowColLength={rowColLength} requiredToWin={requiredToWin} />
+        </div>
+        <div className="game-info">
+          {/* Reverse the order of the list if descending order, as well. */}
+          <ol reversed={descMovesList}> {moves} </ol>
+          <ul> <li style={{ listStyleType: "none" }} onClick={() => toggleSort()}><button>Toggle list to {descMovesList ? "ascending" : "descending"} order.</button> </li> </ul>
+        </div>
       </div>
-      <div className="game-info">
-        {/* Reverse the order of the list if descending order, as well. */}
-        <ol reversed={descMovesList}> {moves} </ol>
-        <ul> <li style={{ listStyleType: "none" }} onClick={() => toggleSort()}><button>Toggle list to {descMovesList ? "ascending" : "descending"} order.</button> </li> </ul>
+      <div className="game">
+      <div>
+        <label for="rowColSelect">Choose board size:</label>
+        <select className="dropDown" id="rowColSelect" defaultValue={3} onChange={() => changeBoardSize(parseInt(rowColSelect.value))}>
+          <option value="3">3x3</option>
+          <option value="4">4x4</option>
+          <option value="5">5x5</option>
+          <option value="6">6x6</option>
+          <option value="7">7x7</option>
+          <option value="8">8x8</option>
+          <option value="9">9x9</option>
+          <option value="10">10x10</option>
+          <option value="11">11x11</option>
+          <option value="12">12x12</option>
+          <option value="13">13x13</option>
+          <option value="14">14x14</option>
+          <option value="15">15x15</option>
+          <option value="16">16x16</option>
+          <option value="17">17x17</option>
+          <option value="18">18x18</option>
+          <option value="19">19x19</option>
+          <option value="20">20x20</option>
+          <option value="21">21x21</option>
+          <option value="22">22x22</option>
+          <option value="23">23x23</option>
+          <option value="24">24x24</option>
+          <option value="25">25x25</option>
+        </select>
       </div>
-    </div>
+      <div>
+        <label for="reqToWinSelect">Choose how many in a row to win:</label>
+        <select className="dropDown" id="reqToWinSelect" defaultValue={3} onChange={() => changeReqToWin(parseInt(reqToWinSelect.value))}>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="6">7</option>
+          <option value="6">8</option>
+          <option value="6">9</option>
+          <option value="6">10</option>
+        </select>
+      </div>
+      </div>
+    </>
   );
 }
 
-function calculateWinner(squares, rowColLength) {
-  // number of Xs/Os in a row required to win
-  let requiredToWin = 5;
+function calculateWinner(squares, rowColLength, requiredToWin) {
   // array that holds the winning lines (array positions)
   const lines = [];
   // array that holds one specific line that can win
@@ -196,6 +252,7 @@ function calculateWinner(squares, rowColLength) {
   for (let i = 0; i < rowColLength ** 2; i += rowColLength) {
 
     winningLine.push(i);
+
 
     // push a winning line to array if the array size is equal to how many positions are required to win
     if (winningLine.length === requiredToWin) {
@@ -261,13 +318,14 @@ function calculateWinner(squares, rowColLength) {
     }
   }
 
+  console.log(lines);
+
   // check win condition
   let checkWinner = [];
   // fill checkWinner array with squares (X/O) values of possible winning lines
   for (let i = 0; i < lines.length; i++) {
     for (let j = 0; j < lines[i].length; j++) {
       if (squares[lines[i][j]]) {
-        console.log(lines[i]);
         checkWinner.push(squares[lines[i][j]]);
       }
     }

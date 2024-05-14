@@ -19,4 +19,5 @@
 6) Displayed the location for each move in the format (row, col) in the move history list.
 7) Rewrote calculateWinner() to calculate winning lines based on board size, rather than hardcoding them.
 8) Rewrote calculateWinner() to calculate win condition based on number in a row required to win, rather than hardcoding it.
-9) 
+9) Added dropdown/select menu to change board size.
+10) Added dropdown/select menu to change how many Os/Xs in a row to win.
