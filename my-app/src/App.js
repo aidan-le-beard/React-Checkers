@@ -40,11 +40,13 @@ function Board({ xIsNext, squares, onPlay, rowColLength, requiredToWin }) {
     status = "Winner: " + squares[winner[0]];
 
     // Implement draw condition
-  } else if (!squares.includes(null) && rowColLength ** 2 == squares.length) {
+  } else if (squares.slice(0, rowColLength ** 2).filter(x => x).length === rowColLength ** 2) {
     status = "The game is a draw.";
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
+
+  console.log(squares.slice(0, rowColLength ** 2).filter(x => x));
 
   // if there's a winner, matches the winning indices returned to the index sent on Square creation, and returns blue on match
   function returnColor(i) {
@@ -177,47 +179,47 @@ export default function Game() {
         </div>
       </div>
       <div className="game">
-      <div>
-        <label for="rowColSelect">Choose board size:</label>
-        <select className="dropDown" id="rowColSelect" defaultValue={3} onChange={() => changeBoardSize(parseInt(rowColSelect.value))}>
-          <option value="3">3x3</option>
-          <option value="4">4x4</option>
-          <option value="5">5x5</option>
-          <option value="6">6x6</option>
-          <option value="7">7x7</option>
-          <option value="8">8x8</option>
-          <option value="9">9x9</option>
-          <option value="10">10x10</option>
-          <option value="11">11x11</option>
-          <option value="12">12x12</option>
-          <option value="13">13x13</option>
-          <option value="14">14x14</option>
-          <option value="15">15x15</option>
-          <option value="16">16x16</option>
-          <option value="17">17x17</option>
-          <option value="18">18x18</option>
-          <option value="19">19x19</option>
-          <option value="20">20x20</option>
-          <option value="21">21x21</option>
-          <option value="22">22x22</option>
-          <option value="23">23x23</option>
-          <option value="24">24x24</option>
-          <option value="25">25x25</option>
-        </select>
-      </div>
-      <div>
-        <label for="reqToWinSelect">Choose how many in a row to win:</label>
-        <select className="dropDown" id="reqToWinSelect" defaultValue={3} onChange={() => changeReqToWin(parseInt(reqToWinSelect.value))}>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="6">7</option>
-          <option value="6">8</option>
-          <option value="6">9</option>
-          <option value="6">10</option>
-        </select>
-      </div>
+        <div>
+          <label htmlFor="rowColSelect">Choose board size:</label>
+          <select className="dropDown" id="rowColSelect" defaultValue={3} onChange={() => changeBoardSize(parseInt(rowColSelect.value))}>
+            <option value="3">3x3</option>
+            <option value="4">4x4</option>
+            <option value="5">5x5</option>
+            <option value="6">6x6</option>
+            <option value="7">7x7</option>
+            <option value="8">8x8</option>
+            <option value="9">9x9</option>
+            <option value="10">10x10</option>
+            <option value="11">11x11</option>
+            <option value="12">12x12</option>
+            <option value="13">13x13</option>
+            <option value="14">14x14</option>
+            <option value="15">15x15</option>
+            <option value="16">16x16</option>
+            <option value="17">17x17</option>
+            <option value="18">18x18</option>
+            <option value="19">19x19</option>
+            <option value="20">20x20</option>
+            <option value="21">21x21</option>
+            <option value="22">22x22</option>
+            <option value="23">23x23</option>
+            <option value="24">24x24</option>
+            <option value="25">25x25</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="reqToWinSelect">Choose how many in a row to win:</label>
+          <select className="dropDown" id="reqToWinSelect" defaultValue={3} onChange={() => changeReqToWin(parseInt(reqToWinSelect.value))}>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="6">7</option>
+            <option value="6">8</option>
+            <option value="6">9</option>
+            <option value="6">10</option>
+          </select>
+        </div>
       </div>
     </>
   );
@@ -318,8 +320,6 @@ function calculateWinner(squares, rowColLength, requiredToWin) {
     }
   }
 
-  console.log(lines);
-
   // check win condition
   let checkWinner = [];
   // fill checkWinner array with squares (X/O) values of possible winning lines
@@ -330,7 +330,7 @@ function calculateWinner(squares, rowColLength, requiredToWin) {
       }
     }
     // count times X or O appears, and if 1 or the other is the required number to win, return which one wins
-    if (checkWinner.filter(x => x === "X").length === requiredToWin || checkWinner.filter(x => x === "O").length === requiredToWin) {
+    if ((checkWinner.filter(x => x === "X").length === requiredToWin || checkWinner.filter(x => x === "O").length === requiredToWin) && requiredToWin <= rowColLength) {
       return lines[i];
     }
     // reset checkWinner for the next line to check
