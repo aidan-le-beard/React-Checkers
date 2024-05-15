@@ -5,6 +5,7 @@
 /// 4) add co caro blocked rule?
 /// 5) DONE Display the location for each move in the format (row, col) in the move history list.
 /// 6) DONE When someone wins, highlight the X squares that caused the win
+/// 7) disable select box
 
 // to use state
 import { useState } from 'react';
@@ -45,8 +46,6 @@ function Board({ xIsNext, squares, onPlay, rowColLength, requiredToWin }) {
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
-
-  console.log(squares.slice(0, rowColLength ** 2).filter(x => x));
 
   // if there's a winner, matches the winning indices returned to the index sent on Square creation, and returns blue on match
   function returnColor(i) {
@@ -109,14 +108,30 @@ export default function Game() {
     setCurrentMove(nextMove);
   }
 
+  // changes the board size
+  function changeBoardSize(value) {
+
+    // determine if a move is being pushed off the board when decreasing size, and jump to move 0, if so
+    let maxIndexPosition = 8;
+    for (let i = history[history.length - 1].length - 1; i > maxIndexPosition; i--) {
+      if (history[history.length - 1][i]) {
+        maxIndexPosition = i;
+        break;
+      }
+    }
+    if (value < rowColLength && maxIndexPosition > value ** 2 - 1) {
+      jumpTo(0);
+    // if all moves are back on board when increasing size, jump to last move
+    } else if (value > rowColLength && maxIndexPosition < value ** 2) {
+      jumpTo(history[history.length - 1].filter(x => x).length);
+    }
+
+    setRowColLength(value);
+  }
+
   // button function. Reverses the order of moves.
   function toggleSort() {
     setDescMovesList(!descMovesList)
-  }
-
-  // changes the board size
-  function changeBoardSize(value) {
-    setRowColLength(value);
   }
 
   // changes how many in a row to win
@@ -124,9 +139,11 @@ export default function Game() {
     setRequiredToWin(value);
   }
 
+  let counter = 0;
   const moves = history.map((squares, move) => {
     let description;
     let rowColPos = []; // holds the calculated [row, col] position of the move
+    let rowColIndex = 0;
 
     if (move > 0) {
 
@@ -136,17 +153,19 @@ export default function Game() {
           // now that the position is found, calculate the row and column position
           rowColPos.push(Math.ceil((i + 1) / rowColLength));
           rowColPos.push((i % rowColLength) + 1);
+          rowColIndex = i;
           break;
         }
       }
 
-      description = 'Go to move #' + move + " (" + rowColPos[0] + ", " + rowColPos[1] + ")";
+      description = 'Go to move #' + counter + " (" + rowColPos[0] + ", " + rowColPos[1] + ")";
     } else {
       description = 'Go to game start';
     }
 
     // check if not the current move, and return a button to jump to that move, if not
-    if (move != currentMove) {
+    if (move != currentMove && rowColIndex <= rowColLength ** 2) {
+      counter++;
       return (
         <li key={move}>
           <button onClick={() => jumpTo(move)}>{description}</button>
@@ -154,13 +173,20 @@ export default function Game() {
       );
 
       // else, if it is the current move, show text that we are at the current move (or game start)
+    } else if (rowColIndex <= rowColLength ** 2) {
+      try {
+        return (
+          // put inline CSS styling to remove number from current position, and special condition for game start (move 0).
+          <li key={move} style={{ listStyleType: "none" }}>You are at {currentMove == 0 ? "game start." : "move #" + counter + " (" + rowColPos[0] + ", " + rowColPos[1] + ")"}</li>
+        );
+      } finally {
+        counter++;
+      }
     } else {
-      return (
-        // put inline CSS styling to remove number from current position, and special condition for game start (move 0).
-        <li key={move} style={{ listStyleType: "none" }}>You are at {currentMove == 0 ? "game start." : "move #" + move + " (" + rowColPos[0] + ", " + rowColPos[1] + ")"}</li>
-      );
+      return;
     }
   });
+
 
   if (descMovesList) {
     moves.reverse();
@@ -174,7 +200,7 @@ export default function Game() {
         </div>
         <div className="game-info">
           {/* Reverse the order of the list if descending order, as well. */}
-          <ol reversed={descMovesList}> {moves} </ol>
+          <ol id="movesList" reversed={descMovesList}> {moves} </ol>
           <ul> <li style={{ listStyleType: "none" }} onClick={() => toggleSort()}><button>Toggle list to {descMovesList ? "ascending" : "descending"} order.</button> </li> </ul>
         </div>
       </div>
@@ -182,42 +208,42 @@ export default function Game() {
         <div>
           <label htmlFor="rowColSelect">Choose board size:</label>
           <select className="dropDown" id="rowColSelect" defaultValue={3} onChange={() => changeBoardSize(parseInt(rowColSelect.value))}>
-            <option value="3">3x3</option>
-            <option value="4">4x4</option>
-            <option value="5">5x5</option>
-            <option value="6">6x6</option>
-            <option value="7">7x7</option>
-            <option value="8">8x8</option>
-            <option value="9">9x9</option>
-            <option value="10">10x10</option>
-            <option value="11">11x11</option>
-            <option value="12">12x12</option>
-            <option value="13">13x13</option>
-            <option value="14">14x14</option>
-            <option value="15">15x15</option>
-            <option value="16">16x16</option>
-            <option value="17">17x17</option>
-            <option value="18">18x18</option>
-            <option value="19">19x19</option>
-            <option value="20">20x20</option>
-            <option value="21">21x21</option>
-            <option value="22">22x22</option>
-            <option value="23">23x23</option>
-            <option value="24">24x24</option>
-            <option value="25">25x25</option>
+            <option disabled={requiredToWin > 3} value="3">3x3</option>
+            <option disabled={requiredToWin > 4} value="4">4x4</option>
+            <option disabled={requiredToWin > 5} value="5">5x5</option>
+            <option disabled={requiredToWin > 6} value="6">6x6</option>
+            <option disabled={requiredToWin > 7} value="7">7x7</option>
+            <option disabled={requiredToWin > 8} value="8">8x8</option>
+            <option disabled={requiredToWin > 9} value="9">9x9</option>
+            <option disabled={requiredToWin > 10} value="10">10x10</option>
+            <option disabled={requiredToWin > 11} value="11">11x11</option>
+            <option disabled={requiredToWin > 12} value="12">12x12</option>
+            <option disabled={requiredToWin > 12} value="13">13x13</option>
+            <option disabled={requiredToWin > 12} value="14">14x14</option>
+            <option disabled={requiredToWin > 12} value="15">15x15</option>
+            <option disabled={requiredToWin > 12} value="16">16x16</option>
+            <option disabled={requiredToWin > 12} value="17">17x17</option>
+            <option disabled={requiredToWin > 12} value="18">18x18</option>
+            <option disabled={requiredToWin > 12} value="19">19x19</option>
+            <option disabled={requiredToWin > 12} value="20">20x20</option>
+            <option disabled={requiredToWin > 12} value="21">21x21</option>
+            <option disabled={requiredToWin > 12} value="22">22x22</option>
+            <option disabled={requiredToWin > 12} value="23">23x23</option>
+            <option disabled={requiredToWin > 12} value="24">24x24</option>
+            <option disabled={requiredToWin > 12} value="25">25x25</option>
           </select>
         </div>
         <div>
           <label htmlFor="reqToWinSelect">Choose how many in a row to win:</label>
           <select className="dropDown" id="reqToWinSelect" defaultValue={3} onChange={() => changeReqToWin(parseInt(reqToWinSelect.value))}>
             <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="6">7</option>
-            <option value="6">8</option>
-            <option value="6">9</option>
-            <option value="6">10</option>
+            <option disabled={4 > rowColLength} value="4">4</option>
+            <option disabled={5 > rowColLength} value="5">5</option>
+            <option disabled={6 > rowColLength} value="6">6</option>
+            <option disabled={7 > rowColLength} value="7">7</option>
+            <option disabled={8 > rowColLength} value="8">8</option>
+            <option disabled={9 > rowColLength} value="9">9</option>
+            <option disabled={10 > rowColLength} value="10">10</option>
           </select>
         </div>
       </div>
