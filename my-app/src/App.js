@@ -5,7 +5,7 @@
 /// 4) add co caro blocked rule?
 /// 5) DONE Display the location for each move in the format (row, col) in the move history list.
 /// 6) DONE When someone wins, highlight the X squares that caused the win
-/// 7) disable select box
+/// 7) DONE disable select box
 
 // to use state
 import { useState } from 'react';
@@ -187,7 +187,6 @@ export default function Game() {
     }
   });
 
-
   if (descMovesList) {
     moves.reverse();
   }
@@ -200,7 +199,7 @@ export default function Game() {
         </div>
         <div className="game-info">
           {/* Reverse the order of the list if descending order, as well. */}
-          <ol id="movesList" reversed={descMovesList}> {moves} </ol>
+          <ol reversed={descMovesList}> {moves} </ol>
           <ul> <li style={{ listStyleType: "none" }} onClick={() => toggleSort()}><button>Toggle list to {descMovesList ? "ascending" : "descending"} order.</button> </li> </ul>
         </div>
       </div>
@@ -218,19 +217,19 @@ export default function Game() {
             <option disabled={requiredToWin > 10} value="10">10x10</option>
             <option disabled={requiredToWin > 11} value="11">11x11</option>
             <option disabled={requiredToWin > 12} value="12">12x12</option>
-            <option disabled={requiredToWin > 12} value="13">13x13</option>
-            <option disabled={requiredToWin > 12} value="14">14x14</option>
-            <option disabled={requiredToWin > 12} value="15">15x15</option>
-            <option disabled={requiredToWin > 12} value="16">16x16</option>
-            <option disabled={requiredToWin > 12} value="17">17x17</option>
-            <option disabled={requiredToWin > 12} value="18">18x18</option>
-            <option disabled={requiredToWin > 12} value="19">19x19</option>
-            <option disabled={requiredToWin > 12} value="20">20x20</option>
-            <option disabled={requiredToWin > 12} value="21">21x21</option>
-            <option disabled={requiredToWin > 12} value="22">22x22</option>
-            <option disabled={requiredToWin > 12} value="23">23x23</option>
-            <option disabled={requiredToWin > 12} value="24">24x24</option>
-            <option disabled={requiredToWin > 12} value="25">25x25</option>
+            <option disabled={requiredToWin > 13} value="13">13x13</option>
+            <option disabled={requiredToWin > 14} value="14">14x14</option>
+            <option disabled={requiredToWin > 15} value="15">15x15</option>
+            <option disabled={requiredToWin > 16} value="16">16x16</option>
+            <option disabled={requiredToWin > 17} value="17">17x17</option>
+            <option disabled={requiredToWin > 18} value="18">18x18</option>
+            <option disabled={requiredToWin > 19} value="19">19x19</option>
+            <option disabled={requiredToWin > 20} value="20">20x20</option>
+            <option disabled={requiredToWin > 21} value="21">21x21</option>
+            <option disabled={requiredToWin > 22} value="22">22x22</option>
+            <option disabled={requiredToWin > 23} value="23">23x23</option>
+            <option disabled={requiredToWin > 24} value="24">24x24</option>
+            <option disabled={requiredToWin > 25} value="25">25x25</option>
           </select>
         </div>
         <div>
