@@ -2,10 +2,11 @@
 /// 1) DONE make winning calculation not hardcoded to adjust board size (3x3, 4x4, 8x8...)
 /// 2) DONE and adjust how many in a row to win (3, 4, 5) to not be hardcoded
 /// 3) DONE add toggles (drop down list?) to adjust board size / how many in a row to win
-/// 4) add co caro blocked rule?
+/// 4) DONE add co caro blocked rule?
 /// 5) DONE Display the location for each move in the format (row, col) in the move history list.
 /// 6) DONE When someone wins, highlight the X squares that caused the win
 /// 7) DONE disable select box
+/// 8) add check box for blocked rule
 
 // to use state
 import { useState } from 'react';
@@ -17,11 +18,11 @@ function Square({ value, onSquareClick, winningColor }) {
   return <button className="square" style={{ backgroundColor: winningColor }} onClick={onSquareClick}>{value}</button>
 }
 
-function Board({ xIsNext, squares, onPlay, rowColLength, requiredToWin }) {
+function Board({ xIsNext, squares, onPlay, rowColLength, requiredToWin, blockedRule }) {
 
   function handleClick(i) {
 
-    if (squares[i] || calculateWinner(squares, rowColLength, requiredToWin)) {
+    if (squares[i] || calculateWinner(squares, rowColLength, requiredToWin, blockedRule)) {
       return;
     }
 
@@ -35,7 +36,7 @@ function Board({ xIsNext, squares, onPlay, rowColLength, requiredToWin }) {
     onPlay(nextSquares);
   }
 
-  const winner = calculateWinner(squares, rowColLength, requiredToWin);
+  const winner = calculateWinner(squares, rowColLength, requiredToWin, blockedRule);
   let status;
   if (winner) {
     status = "Winner: " + squares[winner[0]];
@@ -96,6 +97,8 @@ export default function Game() {
   const currentSquares = history[currentMove];
   // var for changing order of moves to be ascending/descending
   const [descMovesList, setDescMovesList] = useState(0);
+  // var for storing if blocked rule is checked or not
+  const [blockedRule, setBlockedRule] = useState(false);
 
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
@@ -195,7 +198,7 @@ export default function Game() {
     <>
       <div className="game">
         <div className="game-board">
-          <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} rowColLength={rowColLength} requiredToWin={requiredToWin} />
+          <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} rowColLength={rowColLength} requiredToWin={requiredToWin} blockedRule={blockedRule} />
         </div>
         <div className="game-info">
           {/* Reverse the order of the list if descending order, as well. */}
@@ -250,7 +253,7 @@ export default function Game() {
   );
 }
 
-function calculateWinner(squares, rowColLength, requiredToWin) {
+function calculateWinner(squares, rowColLength, requiredToWin, blockedRule) {
   // array that holds the winning lines (array positions)
   const lines = [];
   // array that holds one specific line that can win
@@ -356,7 +359,9 @@ function calculateWinner(squares, rowColLength, requiredToWin) {
     }
     // count times X or O appears, and if 1 or the other is the required number to win, return which one wins
     if ((checkWinner.filter(x => x === "X").length === requiredToWin || checkWinner.filter(x => x === "O").length === requiredToWin) && requiredToWin <= rowColLength) {
-      return lines[i];
+      if (!blockedRule || !checkBlocked(lines[i], squares, rowColLength, requiredToWin)) {
+        return lines[i];
+      }
     }
     // reset checkWinner for the next line to check
     checkWinner = [];
@@ -364,4 +369,49 @@ function calculateWinner(squares, rowColLength, requiredToWin) {
 
   // if no winner, return null
   return null;
+}
+
+// checks if both ends of a winning line are blocked by the opponent
+function checkBlocked(lines, squares, rowColLength, requiredToWin) {
+  // slice the array so we aren't mutating the original
+  let line = lines.slice();
+  // interval between all winning moves is equal; so the blocked positions will be on the same interval
+  let interval = line[1] - line[0];
+
+  // calculate what move the 2 blocking positions needs to be
+  let notWinner;
+  if (squares[line[0]] === "X") {
+    notWinner = "O";
+  } else {
+    notWinner = "X";
+  }
+
+  // add 2 blocking positions to the line
+  line.push(line[line.length - 1] + interval);
+  line.unshift(line[0] - interval);
+
+  // blocking cannot occur with invalid array positions or if the board isn't large enough, so return false
+  if (line[0] < 0 || line[line.length - 1] >= rowColLength ** 2 || rowColLength < (requiredToWin + 2)) {
+    return false;
+  }
+
+  // calculate row positions to make sure the blocking positions are in a continuous line with the winning line
+  let rowPos = [];
+  for (let i = 0; i < line.length; i++) {
+    rowPos.push(Math.ceil((line[i] + 1) / rowColLength));
+  }
+  // if the difference between rows is not consistent, it's not a straight line, so return false
+  let rowDiff = rowPos[2] - rowPos[1];
+  for (let i = 1; i < rowPos.length; i++) {
+    if (rowPos[i] - rowPos[i - 1] != rowDiff) {
+      return false;
+    }
+  }
+
+  // return true if both blocking squares are owned by the opponent
+  if (squares[line[0]] === notWinner && squares[line[line.length - 1]] === notWinner) {
+    return true;
+  }
+
+  return false;
 }

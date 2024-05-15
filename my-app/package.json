@@ -11,9 +11,11 @@
   "dependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-scripts": "^5.0.0"
+    "react-scripts": "^5.0.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@babel/plugin-transform-private-property-in-object": "^7.24.5"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
