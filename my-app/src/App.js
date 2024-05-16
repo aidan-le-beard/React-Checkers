@@ -6,7 +6,8 @@
 /// 5) DONE Display the location for each move in the format (row, col) in the move history list.
 /// 6) DONE When someone wins, highlight the X squares that caused the win
 /// 7) DONE disable select box
-/// 8) add check box for blocked rule
+/// 8) DONE add check box for blocked rule
+/// 9) let's make the select options in a loop, too
 
 // to use state
 import { useState } from 'react';
@@ -111,6 +112,11 @@ export default function Game() {
     setCurrentMove(nextMove);
   }
 
+  // button function. Turns blocked rule off/on based on checkbox
+  function activateBlockedRule(value) {
+    setBlockedRule(!blockedRule);
+  }
+
   // changes the board size
   function changeBoardSize(value) {
 
@@ -142,6 +148,7 @@ export default function Game() {
     setRequiredToWin(value);
   }
 
+  // to keep track of visible moves on the board/list
   let counter = 0;
   const moves = history.map((squares, move) => {
     let description;
@@ -248,6 +255,9 @@ export default function Game() {
             <option disabled={10 > rowColLength} value="10">10</option>
           </select>
         </div>
+      </div>
+      <div>
+        <label><input type="checkbox" id="blockRuleCheckBox" defaultChecked={false} onChange={() => activateBlockedRule(blockRuleCheckBox.value)}/>Blocked Rule (Co Caro)?</label>
       </div>
     </>
   );
