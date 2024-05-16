@@ -8,6 +8,7 @@
 /// 7) DONE disable select box
 /// 8) DONE add check box for blocked rule
 /// 9) let's make the select options in a loop, too
+/// 10) and implement on aidan-le-beard.github.io
 
 // to use state
 import { useState } from 'react';
@@ -201,6 +202,16 @@ export default function Game() {
     moves.reverse();
   }
 
+    // create select options in a loop
+    let rowSelect = [];
+    let toWinSelect = [];
+      for (let i = 3; i <= 25; i++) {
+      rowSelect.push(<option key={i} disabled={requiredToWin > i} value={i}>{i}x{i}</option>);
+      if (i <= 10) {
+        toWinSelect.push(<option key={i} disabled={i > rowColLength} value={i}>{i}</option>);
+      }
+    }
+
   return (
     <>
       <div className="game">
@@ -217,47 +228,18 @@ export default function Game() {
         <div>
           <label htmlFor="rowColSelect">Choose board size:</label>
           <select className="dropDown" id="rowColSelect" defaultValue={3} onChange={() => changeBoardSize(parseInt(rowColSelect.value))}>
-            <option disabled={requiredToWin > 3} value="3">3x3</option>
-            <option disabled={requiredToWin > 4} value="4">4x4</option>
-            <option disabled={requiredToWin > 5} value="5">5x5</option>
-            <option disabled={requiredToWin > 6} value="6">6x6</option>
-            <option disabled={requiredToWin > 7} value="7">7x7</option>
-            <option disabled={requiredToWin > 8} value="8">8x8</option>
-            <option disabled={requiredToWin > 9} value="9">9x9</option>
-            <option disabled={requiredToWin > 10} value="10">10x10</option>
-            <option disabled={requiredToWin > 11} value="11">11x11</option>
-            <option disabled={requiredToWin > 12} value="12">12x12</option>
-            <option disabled={requiredToWin > 13} value="13">13x13</option>
-            <option disabled={requiredToWin > 14} value="14">14x14</option>
-            <option disabled={requiredToWin > 15} value="15">15x15</option>
-            <option disabled={requiredToWin > 16} value="16">16x16</option>
-            <option disabled={requiredToWin > 17} value="17">17x17</option>
-            <option disabled={requiredToWin > 18} value="18">18x18</option>
-            <option disabled={requiredToWin > 19} value="19">19x19</option>
-            <option disabled={requiredToWin > 20} value="20">20x20</option>
-            <option disabled={requiredToWin > 21} value="21">21x21</option>
-            <option disabled={requiredToWin > 22} value="22">22x22</option>
-            <option disabled={requiredToWin > 23} value="23">23x23</option>
-            <option disabled={requiredToWin > 24} value="24">24x24</option>
-            <option disabled={requiredToWin > 25} value="25">25x25</option>
+            {rowSelect} {/* select options created in loop above */}
           </select>
         </div>
         <div>
           <label htmlFor="reqToWinSelect">Choose how many in a row to win:</label>
           <select className="dropDown" id="reqToWinSelect" defaultValue={3} onChange={() => changeReqToWin(parseInt(reqToWinSelect.value))}>
-            <option value="3">3</option>
-            <option disabled={4 > rowColLength} value="4">4</option>
-            <option disabled={5 > rowColLength} value="5">5</option>
-            <option disabled={6 > rowColLength} value="6">6</option>
-            <option disabled={7 > rowColLength} value="7">7</option>
-            <option disabled={8 > rowColLength} value="8">8</option>
-            <option disabled={9 > rowColLength} value="9">9</option>
-            <option disabled={10 > rowColLength} value="10">10</option>
+            {toWinSelect} {/* select options created in loop above */}
           </select>
         </div>
       </div>
       <div>
-        <label><input type="checkbox" id="blockRuleCheckBox" defaultChecked={false} onChange={() => activateBlockedRule(blockRuleCheckBox.value)}/>Blocked Rule (Co Caro)?</label>
+        <label><input type="checkbox" defaultChecked={false} onChange={() => activateBlockedRule()}/>Blocked Rule (Co Caro)?</label>
       </div>
     </>
   );
