@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/static/css/main.97245e42.css",
-    "main.js": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/static/js/main.b1d8083f.js",
+    "main.css": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/static/css/main.cceca75c.css",
+    "main.js": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/static/js/main.1a4e1c64.js",
     "index.html": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/index.html",
-    "main.97245e42.css.map": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/static/css/main.97245e42.css.map",
-    "main.b1d8083f.js.map": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/static/js/main.b1d8083f.js.map"
+    "main.cceca75c.css.map": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/static/css/main.cceca75c.css.map",
+    "main.1a4e1c64.js.map": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/static/js/main.1a4e1c64.js.map"
   },
   "entrypoints": [
-    "static/css/main.97245e42.css",
-    "static/js/main.b1d8083f.js"
+    "static/css/main.cceca75c.css",
+    "static/js/main.1a4e1c64.js"
   ]
 }
