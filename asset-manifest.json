@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/static/css/main.97245e42.css",
-    "main.js": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/static/js/main.4b4415ea.js",
+    "main.js": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/static/js/main.d218b751.js",
     "index.html": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/index.html",
     "main.97245e42.css.map": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/static/css/main.97245e42.css.map",
-    "main.4b4415ea.js.map": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/static/js/main.4b4415ea.js.map"
+    "main.d218b751.js.map": "/React-Resizable-Tic-Tac-Toe-and-Co-Caro/static/js/main.d218b751.js.map"
   },
   "entrypoints": [
     "static/css/main.97245e42.css",
-    "static/js/main.4b4415ea.js"
+    "static/js/main.d218b751.js"
   ]
 }
