@@ -1,15 +1,3 @@
-/// Ideas
-/// 1) DONE make winning calculation not hardcoded to adjust board size (3x3, 4x4, 8x8...)
-/// 2) DONE and adjust how many in a row to win (3, 4, 5) to not be hardcoded
-/// 3) DONE add toggles (drop down list?) to adjust board size / how many in a row to win
-/// 4) DONE add co caro blocked rule?
-/// 5) DONE Display the location for each move in the format (row, col) in the move history list.
-/// 6) DONE When someone wins, highlight the X squares that caused the win
-/// 7) DONE disable select box
-/// 8) DONE add check box for blocked rule
-/// 9) let's make the select options in a loop, too
-/// 10) and implement on aidan-le-beard.github.io
-
 // to use state
 import { useState } from 'react';
 
