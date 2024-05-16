@@ -1,5 +1,7 @@
 # React-Resizable-Tic-Tac-Toe-and-Co-Caro
 
+Check it out in action on my website: https://aidan-le-beard.github.io/React-Resizable-Tic-Tac-Toe-and-Co-Caro/
+
 ### To execute on Windows:
 
 1) Download all code (git clone https://github.com/aidan-le-beard/React-Tic-Tac-Toe)
@@ -8,6 +10,10 @@
 4) Have react installed (npm install)
 5) Run "npm start"
 6) If it doesn't open automatically, go to http://localhost:3000/
+
+### Sample Output:
+
+![image](https://github.com/aidan-le-beard/React-Resizable-Tic-Tac-Toe-and-Co-Caro/assets/33675444/cb39092d-4948-4db6-859b-95fe6fb4e773)
 
 ### Personal Improvements:
 
