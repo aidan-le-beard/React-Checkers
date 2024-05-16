@@ -27,5 +27,5 @@ Check it out in action on my website: https://aidan-le-beard.github.io/React-Res
 8) Rewrote calculateWinner() to calculate win condition based on number in a row required to win, rather than hardcoding it.
 9) Added dropdown/select menu to change board size.
 10) Added dropdown/select menu to change how many Os/Xs in a row to win.
-11) Disabled select options so game remains winnable at all times.
+11) Dynamically disable select options based on options chosen, so game remains winnable at all times.
 12) Added Co Caro (Cờ Carô) blocked rule option: if both sides of a winning line are blocked by opponent, it doesn't win.
